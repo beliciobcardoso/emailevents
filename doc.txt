@@ -1,0 +1,19 @@
+Descrição do Serviço:
+Surgiram novas necessidades:
+1. O cliente deseja que no momento do processamento da requisição realizada pela tela: "F207LOT_SERE - Suprimentos / Gestão de Estoques / Requisição
+Eletrônica / Produtos / Agrupados", seja enviado um e-mail onde:
+o Assunto será: Nova requisição gerada: <Contendo o número da Requisição>:
+
+No corpo:
+Prezado(a), Bom dia!
+Uma nova requisição foi gerada!
+Requisitante: Nome do requisitante e Numero do usuário.
+
+Produto, Descrição, Quantidade, Deposito, Observação
+ProdA    Produto A  6           DEP08      Descrição da OBS A
+ProdB    Produto B  8           DEP05      Descrição da OBS B
+
+Att,
+Nome do Requisito
+
+Gerando também o relatório SERE700 como PDF em anexo no relatório.
