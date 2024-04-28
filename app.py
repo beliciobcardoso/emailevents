@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 import time
 import dotenv
 import os
+import date_time
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 
@@ -184,11 +185,11 @@ if __name__ == "__main__":
                 requisicoes_processadas.insert(0, str(requisicao))
                 # print("Requisições processadas: ", requisicoes_processadas)
                 salvar_requisicoes_processadas(requisicoes_processadas)
-                print(f"Nova requisição encontrada: {requisicao}. E-mail enviado com sucesso!", time.localtime())
+                print(f"Nova requisição encontrada: {requisicao}. E-mail enviado com sucesso!", date_time.data_hora())
                 time.sleep(10)  # Aguarda 10 segundos antes de verificar a próxima requisição
             else:
-                print("Nenhuma nova requisição encontrada.", time.localtime())
+                print("Nenhuma nova requisição encontrada.", date_time.data_hora())
                 # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
                 time.sleep(60)  # Aguarda 60 segundos antes da próxima verificação
     else:
-        print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.")
+        print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.", date_time.data_hora())
