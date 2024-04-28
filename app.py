@@ -62,10 +62,17 @@ def salvar_requisicoes_processadas(requisicoes_processadas):
 # Função para pega o usuario em outra tabela passando o id
 def pegar_usuario_id(conn, id):
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM r910usu WHERE codent = {id}")
+    cursor.execute(f"SELECT nomcom FROM r910usu WHERE codent = {id}")
     usuario = cursor.fetchall()
     cursor.close()
-    return usuario[0][2]
+    return usuario[0][0]
+
+def get_requisitante_id(conn, id):
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT nomusu FROM r999usu WHERE codusu = {id}")
+    usuario = cursor.fetchall()
+    cursor.close()
+    return usuario[0][0]
 
 # Função para verificar novas requisições na tabela específica
 def verificar_novas_requisicoes(conn, requisicoes_processadas):
@@ -82,6 +89,8 @@ def verificar_novas_requisicoes(conn, requisicoes_processadas):
         getRequisitante = ultima_requisicao_bd[0][0]
         fistReq = ultima_requisicao_bd[0][1]
         nomeRequisitante = pegar_usuario_id(conn, getRequisitante)
+        idRequisitante = get_requisitante_id(conn, getRequisitante)
+        login = f"{getRequisitante} - {idRequisitante}"
         
         for i in range(size_ultima_requisicao_bd):
             numeme = ultima_requisicao_bd[i][1]
@@ -96,12 +105,12 @@ def verificar_novas_requisicoes(conn, requisicoes_processadas):
                 detalhes_requisicao += f"<td>{coluna}</td>"
             detalhes_requisicao += "</tr>"
             linhas_html += detalhes_requisicao
-        return linhas_html, fistReq, nomeRequisitante        
+        return linhas_html, fistReq, nomeRequisitante, login      
     return None
 
 
 # Função para enviar e-mail
-def enviar_email(assunto, tabela, nomeRequisitante):
+def enviar_email(assunto, tabela, nomeRequisitante, login):
     # Configurar servidor SMTP
     servidor_smtp = os.getenv('smtp_server')
     porta_smtp = os.getenv('smtp_port')
@@ -137,7 +146,7 @@ def enviar_email(assunto, tabela, nomeRequisitante):
     <body>
         <p>Prezado(a), {saudacao()}!</p>
         <p>Uma nova requisição foi gerada!</p>
-        <p>Requisitante: 463</p>
+        <p>Requisitante: {login}</p>
         <p>Detalhes da Requisição:</p>
         <table>
             <thead>
@@ -178,10 +187,10 @@ if __name__ == "__main__":
             nova_requisicao = verificar_novas_requisicoes(conn, requisicoes_processadas)
             # print(f"Requisições encontradas: {len(novas_requisicoes)}")
             if nova_requisicao:
-                tabela, requisicao, nomeRequisitante = nova_requisicao
+                tabela, requisicao, nomeRequisitante, login = nova_requisicao
                 # print("Tabela com os dados da requisição: ", tabela)
                 assunto = f"Nova requisição gerada: {requisicao}"
-                enviar_email(assunto, tabela, nomeRequisitante)
+                enviar_email(assunto, tabela, nomeRequisitante, login)
                 requisicoes_processadas.insert(0, str(requisicao))
                 # print("Requisições processadas: ", requisicoes_processadas)
                 salvar_requisicoes_processadas(requisicoes_processadas)

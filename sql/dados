@@ -21,6 +21,12 @@ INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_
 
 INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 463, 1268, 2, 'UN', 10, 120131, 'Porca de 3/4', 'Para o escritório', 'ESCRITÓRIO')
 
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 463, 1269, 1, 'UN', 2, 120201, 'NoteBook', 'Para o escritório', 'ESCRITÓRIO')
+
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 463, 1269, 2, 'UN', 2, 120202, 'Monitor 19"', 'Para o escritório', 'ESCRITÓRIO')
+
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 463, 1269, 3, 'UN', 2, 120203, 'Kit Teclado/Mouse', 'Para o escritório', 'ESCRITÓRIO')
+
 
 INSERT INTO r999usu (codusu,nomusu,senha) VALUES (463,'belicio.cardoso','123456'), (480,'joao.santos','123456'), (481,'maria.silva','123456')
 
@@ -29,3 +35,5 @@ SELECT * FROM r999usu
 INSERT INTO r910usu (codent,nomcom) VALUES (463,'Belicio Cardoso'), (480,'João Santos'), (481,'Maria Silva')
 
 SELECT * FROM r910usu
+
+DELETE FROM r999usu WHERE id = 4
