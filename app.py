@@ -15,9 +15,6 @@ database = os.getenv('database')
 username = os.getenv('user')
 password = os.getenv('password')
 
-tabela = 'requisicoes'
-column_number_requisicao = 'requisicao_id'
-
 # Função para conectar ao banco de dados SQL Server
 def conectar_banco():
     try:
@@ -58,9 +55,9 @@ def carregar_requisicoes_processadas():
 # Função para salvar as requisições processadas no arquivo
 def salvar_requisicoes_processadas(requisicoes_processadas):
     with open('requisicoes_processadas.txt', 'w') as file:
-        for req in requisicoes_processadas:
-            file.write(f"{req}\n")
-            
+        for requisicao_processada in requisicoes_processadas:
+         file.write(f"{requisicao_processada}\n")
+                
 # Função para pega o usuario em outra tabela passando o id
 def pegar_usuario_id(conn, id):
     cursor = conn.cursor()
@@ -73,8 +70,9 @@ def pegar_usuario_id(conn, id):
 def verificar_novas_requisicoes(conn, requisicoes_processadas):
     findListReq = []
     lastReq = requisicoes_processadas[0]
+    # print("Ultima requisição processada: ", lastReq)
     cursor = conn.cursor()
-    cursor.execute(f"SELECT usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito FROM {tabela} WHERE requisicao_id > {lastReq}")
+    cursor.execute(f"SELECT usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito FROM requisicoes WHERE requisicao_id > {lastReq}")
     ultima_requisicao_bd = cursor.fetchall()
     cursor.close()
     
@@ -174,7 +172,7 @@ if __name__ == "__main__":
     conn = conectar_banco()
     if conn:
         requisicoes_processadas = carregar_requisicoes_processadas()
-        print("Lista das requi salvar em arquivo: ", requisicoes_processadas)
+        # print("Lista das requi salvar em arquivo: ", requisicoes_processadas)
         while True:
             nova_requisicao = verificar_novas_requisicoes(conn, requisicoes_processadas)
             # print(f"Requisições encontradas: {len(novas_requisicoes)}")
@@ -183,11 +181,14 @@ if __name__ == "__main__":
                 # print("Tabela com os dados da requisição: ", tabela)
                 assunto = f"Nova requisição gerada: {requisicao}"
                 enviar_email(assunto, tabela, nomeRequisitante)
-                # requisicoes_processadas.append(str(numeme))
-                # salvar_requisicoes_processadas(requisicoes_processadas)
+                requisicoes_processadas.insert(0, str(requisicao))
+                # print("Requisições processadas: ", requisicoes_processadas)
+                salvar_requisicoes_processadas(requisicoes_processadas)
+                print(f"Nova requisição encontrada: {requisicao}. E-mail enviado com sucesso!", time.localtime())
+                time.sleep(10)  # Aguarda 10 segundos antes de verificar a próxima requisição
             else:
-                print("Nenhuma nova requisição encontrada.")
-            # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
-            time.sleep(60)  # Aguarda 60 segundos antes da próxima verificação
+                print("Nenhuma nova requisição encontrada.", time.localtime())
+                # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
+                time.sleep(60)  # Aguarda 60 segundos antes da próxima verificação
     else:
         print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.")

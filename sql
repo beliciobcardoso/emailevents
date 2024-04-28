@@ -17,6 +17,10 @@ INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_
 
 INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 481, 1267, 3, 'UN', 100, 120129, 'Patch Cord Cat6 2,0m', 'Obra Nova', 'LOCAL')
 
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 463, 1268, 1, 'UN', 10, 120130, 'Parafuso de 3/4', 'Para o escritório', 'ESCRITÓRIO')
+
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 463, 1268, 2, 'UN', 10, 120131, 'Porca de 3/4', 'Para o escritório', 'ESCRITÓRIO')
+
 
 INSERT INTO r999usu (codusu,nomusu,senha) VALUES (463,'belicio.cardoso','123456'), (480,'joao.santos','123456'), (481,'maria.silva','123456')
 
