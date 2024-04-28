@@ -33,6 +33,16 @@ def conectar_banco():
         print(f"Erro ao conectar ao banco de dados: {e}")
         return None
 
+# Função para exibir mensagem de bom dia, boa tarde ou boa noite
+def saudacao():
+    hora = time.localtime().tm_hour
+    if hora < 12:
+        return "Bom dia"
+    elif hora < 18:
+        return "Boa tarde"
+    else:
+        return "Boa noite"
+
 # Função para carregar as requisições processadas a partir do arquivo
 def carregar_requisicoes_processadas():
     #quero criar um arquivo txt para salvar as requisições processadas caso nao exista
@@ -126,7 +136,7 @@ def enviar_email(assunto, tabela, nomeRequisitante):
         </style>
     </head>
     <body>
-        <p>Prezado(a), Bom dia!</p>
+        <p>Prezado(a), {saudacao()}!</p>
         <p>Uma nova requisição foi gerada!</p>
         <p>Requisitante: 463</p>
         <p>Detalhes da Requisição:</p>
