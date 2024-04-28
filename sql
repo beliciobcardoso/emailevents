@@ -2,10 +2,26 @@ USE sapiens
 
 SELECT * FROM requisicoes
 
-INSERT INTO sapiens.dbo.requisicoes (requisicao_id,empresa_id,filial_id,usuario_id,quantidade,um,produto_id,descricao_produto,Observacao,deposito ) VALUES (1265, 40, 1, 463,100, 'UN', 110254, 'Vassoura de 1/2', 'Obras e Instalações', 'GERRBA')
 
-INSERT INTO sapiens.dbo.requisicoes (requisicao_id,empresa_id,filial_id,usuario_id,quantidade,um,produto_id,descricao_produto,Observacao,deposito ) VALUES (1265, 40, 1, 463,100, 'UN', 110254, 'Apanhador', 'Obras e Instalações', 'GERRBA')
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 463, 1265, 1, 'UN',100, 110254, 'Vassoura de 1/2', 'Obras e Instalações', 'GERRBA')
 
-UPDATE requisicoes SET produto_id = 110365 WHERE id_seque = 2 AND requisicao_id = 1265
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 463, 1265, 2, 'UN', 50, 110365, 'Apanhador', 'Obras e Instalações', 'GERRBA')
 
-UPDATE requisicoes SET quantidade = 50 WHERE id_seque = 2 AND requisicao_id = 1265
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 480, 1266, 1, 'MT', 300, 120125, 'Cabo de Rede UTP Cat6', 'Obra Nova', 'LOCAL')
+
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 480, 1266, 2, 'UN', 100, 120126, 'Conector RJ45 Cat6', 'Obra Nova', 'LOCAL')
+
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 481, 1267, 1, 'UN', 100, 120127, 'Patch Panel 24 Portas Cat6', 'Obra Nova', 'LOCAL')
+
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 481, 1267, 2, 'UN', 100, 120128, 'Patch Cord Cat6 1,5m', 'Obra Nova', 'LOCAL')
+
+INSERT INTO sapiens.dbo.requisicoes (empresa_id,filial_id,usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito) VALUES (40, 1, 481, 1267, 3, 'UN', 100, 120129, 'Patch Cord Cat6 2,0m', 'Obra Nova', 'LOCAL')
+
+
+INSERT INTO r999usu (codusu,nomusu,senha) VALUES (463,'belicio.cardoso','123456'), (480,'joao.santos','123456'), (481,'maria.silva','123456')
+
+SELECT * FROM r999usu
+
+INSERT INTO r910usu (codent,nomcom) VALUES (463,'Belicio Cardoso'), (480,'João Santos'), (481,'Maria Silva')
+
+SELECT * FROM r910usu
