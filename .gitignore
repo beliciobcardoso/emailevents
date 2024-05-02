@@ -1,3 +1,4 @@
 .env
 .venv
 requisicoes_processadas.txt
+app.log

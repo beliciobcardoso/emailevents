@@ -6,8 +6,15 @@ import time
 import dotenv
 import os
 import date_time
+import logging
+
+# Configuração do logger com info e error
+logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(filename='app.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 
 dotenv.load_dotenv(dotenv.find_dotenv())
+
+
 
 # Variáveis para as propriedades da conexão com o banco de dados
 driver = '{SQL Server}'
@@ -18,18 +25,21 @@ password = os.getenv('password')
 
 # Função para conectar ao banco de dados SQL Server
 def conectar_banco():
-    try:
-        conn = pyodbc.connect(
-            f'DRIVER={driver};'
-            f'SERVER={server};'
-            f'DATABASE={database};'
-            f'UID={username};'
-            f'PWD={password};'
-        )
-        return conn
-    except pyodbc.Error as e:
-        print(f"Erro ao conectar ao banco de dados: {e}")
-        return None
+    while True:
+        try:
+            conn = pyodbc.connect(
+                f'DRIVER={driver};'
+                f'SERVER={server};'
+                f'DATABASE={database};'
+                f'UID={username};'
+                f'PWD={password};'
+            )
+            logging.info("Conexão ao banco de dados estabelecida com sucesso.")
+            return conn
+        except pyodbc.Error as e:
+            print(f"Erro ao conectar ao banco de dados: {e} - {date_time.data_hora()}")
+            logging.error(f"Erro ao conectar ao banco de dados: {e} - Verifique as configurações de conexão ou o banco de dados pode esta offline. {date_time.data_hora()}")
+            time.sleep(sleep_DB)
 
 # Função para exibir mensagem de bom dia, boa tarde ou boa noite
 def saudacao():
@@ -178,27 +188,37 @@ def enviar_email(assunto, tabela, nomeRequisitante, login):
         server.send_message(msg)
 
 # Main
-if __name__ == "__main__":
-    conn = conectar_banco()
-    if conn:
-        requisicoes_processadas = carregar_requisicoes_processadas()
-        # print("Lista das requi salvar em arquivo: ", requisicoes_processadas)
-        while True:
-            nova_requisicao = verificar_novas_requisicoes(conn, requisicoes_processadas)
-            # print(f"Requisições encontradas: {len(novas_requisicoes)}")
-            if nova_requisicao:
-                tabela, requisicao, nomeRequisitante, login = nova_requisicao
-                # print("Tabela com os dados da requisição: ", tabela)
-                assunto = f"Nova requisição gerada: {requisicao}"
-                enviar_email(assunto, tabela, nomeRequisitante, login)
-                requisicoes_processadas.insert(0, str(requisicao))
-                # print("Requisições processadas: ", requisicoes_processadas)
-                salvar_requisicoes_processadas(requisicoes_processadas)
-                print(f"Nova requisição encontrada: {requisicao}. E-mail enviado com sucesso!", date_time.data_hora())
-                time.sleep(10)  # Aguarda 10 segundos antes de verificar a próxima requisição
-            else:
-                print("Nenhuma nova requisição encontrada.", date_time.data_hora())
-                # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
-                time.sleep(60)  # Aguarda 60 segundos antes da próxima verificação
-    else:
-        print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.", date_time.data_hora())
+if __name__ == "__main__":    
+    while True:
+        sleep_main = 30
+        sleep_DB = 30
+        sleep_new_requisicao = 30
+        sleep_next_requisicao = 10
+        conn = conectar_banco()
+        try:
+            if conn:
+                requisicoes_processadas = carregar_requisicoes_processadas()
+                nova_requisicao = verificar_novas_requisicoes(conn, requisicoes_processadas)
+                # print(f"Requisições encontradas: {len(novas_requisicoes)}")
+                if nova_requisicao:
+                    tabela, requisicao, nomeRequisitante, login = nova_requisicao
+                    # print("Tabela com os dados da requisição: ", tabela)
+                    assunto = f"Nova requisição gerada: {requisicao}"
+                    enviar_email(assunto, tabela, nomeRequisitante, login)
+                    requisicoes_processadas.insert(0, str(requisicao))
+                    # print("Requisições processadas: ", requisicoes_processadas)
+                    salvar_requisicoes_processadas(requisicoes_processadas)
+                    print(f"Nova requisição encontrada: {requisicao}. E-mail enviado com sucesso!", date_time.data_hora())
+                    time.sleep(sleep_next_requisicao)  # Aguarda 10 segundos antes de verificar a próxima requisição
+                else:
+                    print("Nenhuma nova requisição encontrada.", date_time.data_hora())
+                    # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
+                    time.sleep(sleep_new_requisicao)  # Aguarda 60 segundos antes da próxima verificação
+            # else:
+            #     logging.error(f"Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.")
+            #     print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão ou o banco de dados pode esta offline..", date_time.data_hora())
+            #     time.sleep(60)
+        except Exception as e:
+            print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.", date_time.data_hora())
+            logging.error(f"Não foi possível conectar ao banco de dados: {e} - {date_time.data_hora()}")
+            time.sleep(sleep_main)
