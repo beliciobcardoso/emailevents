@@ -80,7 +80,7 @@ def verificar_novas_requisicoes(conn, requisicoes_processadas):
     lastReq = requisicoes_processadas[0]
     # print("Ultima requisição processada: ", lastReq)
     cursor = conn.cursor()
-    cursor.execute(f"SELECT usuario_id,requisicao_id,sequencia,um,quantidade,produto_id,descricao_produto,Observacao,deposito FROM requisicoes WHERE requisicao_id > {lastReq}")
+    cursor.execute(f"SELECT usueme,numeme,seqeme,unimed,qtdeme,codpro,cplpro,obseme,coddep FROM e207eme WHERE numeme > {lastReq}")
     ultima_requisicao_bd = cursor.fetchall()
     cursor.close()
     
@@ -199,6 +199,6 @@ if __name__ == "__main__":
             else:
                 print("Nenhuma nova requisição encontrada.", date_time.data_hora())
                 # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
-                time.sleep(60)  # Aguarda 60 segundos antes da próxima verificação
+                time.sleep(60*10)  # Aguarda 60 segundos antes da próxima verificação
     else:
         print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.", date_time.data_hora())
