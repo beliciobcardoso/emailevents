@@ -6,8 +6,15 @@ import time
 import dotenv
 import os
 import date_time
+import logging
+
+# Configuração do logger com info e error
+logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(filename='app.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 
 dotenv.load_dotenv(dotenv.find_dotenv())
+
+
 
 # Variáveis para as propriedades da conexão com o banco de dados
 driver = '{SQL Server}'
@@ -18,18 +25,21 @@ password = os.getenv('password')
 
 # Função para conectar ao banco de dados SQL Server
 def conectar_banco():
-    try:
-        conn = pyodbc.connect(
-            f'DRIVER={driver};'
-            f'SERVER={server};'
-            f'DATABASE={database};'
-            f'UID={username};'
-            f'PWD={password};'
-        )
-        return conn
-    except pyodbc.Error as e:
-        print(f"Erro ao conectar ao banco de dados: {e}")
-        return None
+    while True:
+        try:
+            conn = pyodbc.connect(
+                f'DRIVER={driver};'
+                f'SERVER={server};'
+                f'DATABASE={database};'
+                f'UID={username};'
+                f'PWD={password};'
+            )
+            logging.info("Conexão ao banco de dados estabelecida com sucesso.")
+            return conn
+        except pyodbc.Error as e:
+            print(f"Erro ao conectar ao banco de dados: {e} - {date_time.data_hora()}")
+            logging.error(f"Erro ao conectar ao banco de dados: {e} - Verifique as configurações de conexão ou o banco de dados pode esta offline. {date_time.data_hora()}")
+            time.sleep(sleep_DB)
 
 # Função para exibir mensagem de bom dia, boa tarde ou boa noite
 def saudacao():
@@ -199,6 +209,6 @@ if __name__ == "__main__":
             else:
                 print("Nenhuma nova requisição encontrada.", date_time.data_hora())
                 # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
-                time.sleep(60*10)  # Aguarda 60 segundos antes da próxima verificação
+                time.sleep(60)  # Aguarda 60 segundos antes da próxima verificação
     else:
         print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.", date_time.data_hora())
