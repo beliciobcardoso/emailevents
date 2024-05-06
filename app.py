@@ -189,26 +189,36 @@ def enviar_email(assunto, tabela, nomeRequisitante, login):
 
 # Main
 if __name__ == "__main__":
-    conn = conectar_banco()
-    if conn:
-        requisicoes_processadas = carregar_requisicoes_processadas()
-        # print("Lista das requi salvar em arquivo: ", requisicoes_processadas)
-        while True:
-            nova_requisicao = verificar_novas_requisicoes(conn, requisicoes_processadas)
-            # print(f"Requisições encontradas: {len(novas_requisicoes)}")
-            if nova_requisicao:
-                tabela, requisicao, nomeRequisitante, login = nova_requisicao
-                # print("Tabela com os dados da requisição: ", tabela)
-                assunto = f"Nova requisição gerada: {requisicao}"
-                enviar_email(assunto, tabela, nomeRequisitante, login)
-                requisicoes_processadas.insert(0, str(requisicao))
-                # print("Requisições processadas: ", requisicoes_processadas)
-                salvar_requisicoes_processadas(requisicoes_processadas)
-                print(f"Nova requisição encontrada: {requisicao}. E-mail enviado com sucesso!", date_time.data_hora())
-                time.sleep(10)  # Aguarda 10 segundos antes de verificar a próxima requisição
-            else:
-                print("Nenhuma nova requisição encontrada.", date_time.data_hora())
-                # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
-                time.sleep(60)  # Aguarda 60 segundos antes da próxima verificação
-    else:
-        print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.", date_time.data_hora())
+    while True:
+            sleep_main = 60*10
+            sleep_DB = 30
+            sleep_new_requisicao = 60
+            sleep_next_requisicao = 10
+            conn = conectar_banco()
+            try:
+                if conn:
+                    requisicoes_processadas = carregar_requisicoes_processadas()
+                    nova_requisicao = verificar_novas_requisicoes(conn, requisicoes_processadas)
+                    # print(f"Requisições encontradas: {len(novas_requisicoes)}")
+                    if nova_requisicao:
+                        tabela, requisicao, nomeRequisitante, login = nova_requisicao
+                        # print("Tabela com os dados da requisição: ", tabela)
+                        assunto = f"Nova requisição gerada: {requisicao}"
+                        enviar_email(assunto, tabela, nomeRequisitante, login)
+                        requisicoes_processadas.insert(0, str(requisicao))
+                        # print("Requisições processadas: ", requisicoes_processadas)
+                        salvar_requisicoes_processadas(requisicoes_processadas)
+                        print(f"Nova requisição encontrada: {requisicao}. E-mail enviado com sucesso!", date_time.data_hora())
+                        time.sleep(sleep_next_requisicao)  # Aguarda 10 segundos antes de verificar a próxima requisição
+                    else:
+                        print("Nenhuma nova requisição encontrada.", date_time.data_hora())
+                        # Coloque um tempo de espera entre as verificações para não sobrecarregar o servidor
+                        time.sleep(sleep_new_requisicao)  # Aguarda 60 segundos antes da próxima verificação
+                # else:
+                #     logging.error(f"Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.")
+                #     print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão ou o banco de dados pode esta offline..", date_time.data_hora())
+                #     time.sleep(60)
+            except Exception as e:
+                print("Não foi possível conectar ao banco de dados. Verifique as configurações de conexão.", date_time.data_hora())
+                logging.error(f"Não foi possível conectar ao banco de dados: {e} - {date_time.data_hora()}")
+                time.sleep(sleep_main)
