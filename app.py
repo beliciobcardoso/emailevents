@@ -7,6 +7,7 @@ import dotenv
 import os
 import date_time
 import logging
+import saudacao
 
 # Configuração do logger com info e error
 logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
@@ -17,7 +18,7 @@ dotenv.load_dotenv(dotenv.find_dotenv())
 
 
 # Variáveis para as propriedades da conexão com o banco de dados
-driver = '{SQL Server}'
+driver = '{ODBC Driver 17 for SQL Server}'
 server = os.getenv('server')
 database = os.getenv('database')
 username = os.getenv('user')
@@ -42,14 +43,14 @@ def conectar_banco():
             time.sleep(sleep_DB)
 
 # Função para exibir mensagem de bom dia, boa tarde ou boa noite
-def saudacao():
-    hora = time.localtime().tm_hour
-    if hora < 12:
-        return "Bom dia"
-    elif hora < 18:
-        return "Boa tarde"
-    else:
-        return "Boa noite"
+# def saudacao():
+#     hora = time.localtime().tm_hour
+#     if hora < 12:
+#         return "Bom dia"
+#     elif hora < 18:
+#         return "Boa tarde"
+#     else:
+#         return "Boa noite"
 
 # Função para carregar as requisições processadas a partir do arquivo
 def carregar_requisicoes_processadas():
@@ -130,7 +131,7 @@ def enviar_email(assunto, tabela, nomeRequisitante, login):
     # Criar mensagem
     msg = MIMEMultipart()
     msg['From'] = usuario
-    msg['To'] = os.getenv('email_destinatario')
+    msg['To'] = os.getenv(['email_destinatario','belloinfo@gmail.com'])
     msg['Subject'] = assunto
     
     # Corpo do e-mail em formato HTML
@@ -154,7 +155,7 @@ def enviar_email(assunto, tabela, nomeRequisitante, login):
         </style>
     </head>
     <body>
-        <p>Prezado(a), {saudacao()}!</p>
+        <p>Prezado(a), {saudacao.saudacao()}!</p>
         <p>Uma nova requisição foi gerada!</p>
         <p>Requisitante: {login}</p>
         <p>Detalhes da Requisição:</p>
